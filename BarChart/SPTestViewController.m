@@ -14,6 +14,8 @@
 @property (weak, nonatomic) IBOutlet SPBarChart *barChartView;
 @property (weak, nonatomic) IBOutlet SPBarChart *barChartView2;
 
+@property (strong, nonatomic) UIDynamicAnimator *animator;
+
 @end
 
 @implementation SPTestViewController
@@ -37,7 +39,15 @@
     self.barChartView.barChartBackgroundColor = [UIColor colorWithRed:200 / 255.0f green:235 / 255.0f blue:139 / 255.0f alpha:1.0f];
     self.barChartView2.barChartBackgroundColor = [UIColor colorWithRed:158 / 255.0f green:193 / 255.0f blue:230 / 255.0f alpha:1.0f];
     
-    [self showBarChartViewsWithRandomProgressValue];
+    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
+    
+    [UIView animateWithDuration:1.0f animations:^{
+        // increase to 1.1 of the final size
+    } completion:^(BOOL finished) {
+        // reduce to final size in new animation block
+    }];
+    
+    //[self showBarChartViewsWithRandomProgressValue];
 }
 
 - (void)didReceiveMemoryWarning
@@ -57,7 +67,11 @@
 #pragma mark - IBAction
 
 - (IBAction)randomizeButtonAction:(id)sender
-{
+{ UIAttachmentBehavior *attachment = [[UIAttachmentBehavior alloc] initWithItem:self.barChartView attachedToAnchor:self.barChartView.center];
+    attachment.damping = 0.5;
+    attachment.frequency = 5.0;
+    [self.animator addBehavior:attachment];
+
     [self showBarChartViewsWithRandomProgressValue];
 }
 
