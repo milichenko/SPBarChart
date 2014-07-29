@@ -12,7 +12,7 @@
 @interface SPTestViewController ()
 
 @property (weak, nonatomic) IBOutlet SPBarChart *barChartView;
-@property (weak, nonatomic) IBOutlet SPBarChart *barChartView2;
+@property (weak, nonatomic) IBOutlet SPBarChart *barChartView2;;
 
 @property (strong, nonatomic) UIDynamicAnimator *animator;
 
@@ -39,15 +39,7 @@
     self.barChartView.barChartBackgroundColor = [UIColor colorWithRed:200 / 255.0f green:235 / 255.0f blue:139 / 255.0f alpha:1.0f];
     self.barChartView2.barChartBackgroundColor = [UIColor colorWithRed:158 / 255.0f green:193 / 255.0f blue:230 / 255.0f alpha:1.0f];
     
-    self.animator = [[UIDynamicAnimator alloc] initWithReferenceView:self.view];
-    
-    [UIView animateWithDuration:1.0f animations:^{
-        // increase to 1.1 of the final size
-    } completion:^(BOOL finished) {
-        // reduce to final size in new animation block
-    }];
-    
-    //[self showBarChartViewsWithRandomProgressValue];
+    [self showBarChartViewsWithRandomProgressValue];
 }
 
 - (void)didReceiveMemoryWarning
@@ -56,23 +48,19 @@
     // Dispose of any resources that can be recreated.
 }
 
+#pragma mark - IBAction
+
+- (IBAction)randomizeButtonAction:(id)sender
+{
+    [self showBarChartViewsWithRandomProgressValue];
+}
+
 #pragma mark - Private Methods
 
 - (void)showBarChartViewsWithRandomProgressValue
 {
     self.barChartView.progressValue = drand48();
     self.barChartView2.progressValue = drand48();
-}
-
-#pragma mark - IBAction
-
-- (IBAction)randomizeButtonAction:(id)sender
-{ UIAttachmentBehavior *attachment = [[UIAttachmentBehavior alloc] initWithItem:self.barChartView attachedToAnchor:self.barChartView.center];
-    attachment.damping = 0.5;
-    attachment.frequency = 5.0;
-    [self.animator addBehavior:attachment];
-
-    [self showBarChartViewsWithRandomProgressValue];
 }
 
 @end

@@ -8,9 +8,20 @@
 
 #import <QuartzCore/QuartzCore.h>
 
+@class SPBarChartLayer;
+
+@protocol SPBarChartLayerAnimationDelegate <NSObject>
+
+@optional
+- (void)barChartLayerAnimationDidStop:(SPBarChartLayer *)barChartLayer;
+
+@end
+
 @interface SPBarChartLayer : CALayer
 
 @property (strong, nonatomic) UIColor *barChartBackgroundColor;
+
+@property (weak, nonatomic) id<SPBarChartLayerAnimationDelegate> barChartLayerAnimationDelegate;
 
 @property (assign, nonatomic) CGFloat progressValue;
 

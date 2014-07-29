@@ -31,6 +31,7 @@
     {
         CABasicAnimation *animation = [CABasicAnimation animationWithKeyPath:aKey];
         animation.fromValue = [self.presentationLayer valueForKey:aKey];
+        animation.delegate = self;
         
         return animation;
     }
@@ -40,7 +41,9 @@
 
 - (void)drawInContext:(CGContextRef)ctx
 {
-    CGRect frameRect = self.frame;
+    CGFloat verticalOffset = self.frame.size.height / 10.0f;
+    
+    CGRect frameRect = CGRectMake(self.frame.origin.x, self.frame.origin.y, self.frame.size.width, self.frame.size.height - verticalOffset);
     
     CGFloat red = 0.0f;
     CGFloat green = 0.0f;
@@ -51,7 +54,7 @@
     
     CGFloat rectangleHeight = frameRect.size.height * self.progressValue;
     
-    CGRect rectangle = CGRectMake(0.0f, frameRect.size.height - rectangleHeight, frameRect.size.width, rectangleHeight);
+    CGRect rectangle = CGRectMake(0.0f, frameRect.size.height - rectangleHeight + verticalOffset, frameRect.size.width, rectangleHeight);
     
     CGContextSetRGBFillColor(ctx, red, green, blue, alpha);
     CGContextFillRect(ctx, rectangle);
@@ -59,5 +62,17 @@
     [super drawInContext:ctx];
 }
 
+#pragma mark - Animation delegate
+
+- (void)animationDidStop:(CAAnimation *)anim finished:(BOOL)flag
+{
+    if (flag)
+    {
+        if ([self.barChartLayerAnimationDelegate respondsToSelector:@selector(barChartLayerAnimationDidStop:)])
+        {
+            [self.barChartLayerAnimationDelegate barChartLayerAnimationDidStop:self];
+        }
+    }
+}
 
 @end

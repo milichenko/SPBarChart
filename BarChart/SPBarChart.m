@@ -9,6 +9,10 @@
 #import "SPBarChart.h"
 #import "SPBarChartLayer.h"
 
+@interface SPBarChart () <SPBarChartLayerAnimationDelegate>
+
+@end
+
 @implementation SPBarChart
 
 + (Class)layerClass
@@ -22,7 +26,7 @@
     
     if (self)
     {
-        self.layer.contentsScale = [[UIScreen mainScreen] scale];
+        [self initialSetup];
     }
     
     return self;
@@ -42,12 +46,12 @@
     if (self)
     {
         self.barChartBackgroundColor = backgroundColor;
-        self.layer.contentsScale = [[UIScreen mainScreen] scale];
-        [self.layer setNeedsDisplay];
     }
     
     return self;
 }
+
+#pragma mark - Getters and Setters
 
 - (CGFloat)progressValue
 {
@@ -61,6 +65,39 @@
     SPBarChartLayer *layer = (SPBarChartLayer *)self.layer;
     layer.progressValue = progressValue;
     layer.barChartBackgroundColor = self.barChartBackgroundColor;
+}
+
+#pragma mark - Private methods
+
+- (void)initialSetup
+{
+    self.layer.contentsScale = [[UIScreen mainScreen] scale];
+    SPBarChartLayer *layer = (SPBarChartLayer *)self.layer;
+    layer.barChartLayerAnimationDelegate = self;
+}
+
+#pragma mark - SPBarChartLayerAnimationDelegate
+
+- (void)barChartLayerAnimationDidStop:(SPBarChartLayer *)barChartLayer
+{
+    CGFloat percentsForVerticalAnimation = barChartLayer.frame.size.height / 10.0f;
+    
+    [UIView animateWithDuration:0.25 animations:^{
+        barChartLayer.frame = CGRectMake(barChartLayer.frame.origin.x,
+                                         barChartLayer.frame.origin.y - percentsForVerticalAnimation,
+                                         barChartLayer.frame.size.width,
+                                         barChartLayer.frame.size.height + percentsForVerticalAnimation);
+    } completion:^(BOOL finished) {
+        if (finished)
+        {
+            [UIView animateWithDuration:0.25 animations:^{
+                barChartLayer.frame = CGRectMake(barChartLayer.frame.origin.x,
+                                                 barChartLayer.frame.origin.y + percentsForVerticalAnimation,
+                                                 barChartLayer.frame.size.width,
+                                                 barChartLayer.frame.size.height - percentsForVerticalAnimation);
+            }];
+        }
+    }];
 }
 
 @end
